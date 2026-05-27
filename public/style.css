@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════════════════════════════
+   FORECAST DRIFT — Apple-inspired dark weather UI
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:           #07111f;
+  --bg2:          #0c1c30;
+  --glass:        rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.11);
+  --glass-hover:  rgba(255,255,255,0.11);
+  --text:         #ffffff;
+  --text-dim:     rgba(255,255,255,0.55);
+  --text-faint:   rgba(255,255,255,0.30);
+  --blue:         #0A84FF;
+  --blue-dim:     rgba(10,132,255,0.25);
+  --green:        #30D158;
+  --red:          #FF453A;
+  --orange:       #FF9F0A;
+  --yellow:       #FFD60A;
+  --purple:       #BF5AF2;
+  --radius:       18px;
+  --radius-sm:    12px;
+  --font:         -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --sidebar-w:    280px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* ─── Layout ────────────────────────────────────────────────── */
+.Main {
+  min-height: 100vh;
+  padding-bottom: 80px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── Animated BG Art ───────────────────────────────────────── */
+.bg-art {
+  position: fixed; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(10,132,255,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 80% 50% at 80% 80%, rgba(191,90,242,0.08) 0%, transparent 70%),
+              linear-gradient(180deg, #07111f 0%, #0a1628 50%, #07111f 100%);
+  pointer-events: none;
+  transition: background 1.2s ease;
+}
+.bg-art.stormy {
+  background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(60,0,120,0.35) 0%, transparent 70%),
+              linear-gradient(180deg, #050810 0%, #0a0618 50%, #050810 100%);
+}
+.bg-art.sunny {
+  background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(255,159,10,0.20) 0%, transparent 70%),
+              radial-gradient(ellipse 80% 50% at 20% 80%, rgba(255,200,10,0.06) 0%, transparent 70%),
+              linear-gradient(180deg, #07111f 0%, #0d1a2a 50%, #07111f 100%);
+}
+.bg-art.rainy, {
+  background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(10,80,200,0.22) 0%, transparent 70%),
+              linear-gradient(180deg, #060d1c 0%, #091525 50%, #060d1c 100%);
+}
+.bg-art.snowy {
+  background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(180,220,255,0.15) 0%, transparent 70%),
+              linear-gradient(180deg, #07111f 0%, #0d1a28 50%, #07111f 100%);
+}
