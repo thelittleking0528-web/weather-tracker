@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forecast Drift</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ░░░ SIDEBAR ░░░ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="app-brand">
+      <span class="app-icon">⛅</span>
+      <span class="app-name">Forecast Drift</span>
+    </div>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">LOCATIONS</div>
+    <div id="locationList" class="location-list"></div>
+    <button class="add-location-btn" id="addLocationBtn">
+      <span>+</span> Add Location
+    </button>
+  </div>
+
+  <div class="sidebar-section sidebar-bottom">
+    <div class="sidebar-section-label">SNAPSHOT</div>
+    <div class="snapshot-info" id="snapshotInfo">—</div>
+    <button class="refresh-btn" id="refreshBtn">
+      <span class="refresh-icon">↻</span> Refresh Now
+    </button>
+  </div>
+</aside>
+
+<!-- ░░░ ADD LOCATION MODAL ░░░ -->
+<div class="modal-overlay" id="addLocationModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Add Location</h2>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="geocode-search">
+      <input type="text" id="geocodeInput" placeholder="Search city or ZIP…" autocomplete="off">
+      <button id="geocodeSearch">Search</button>
+    </div>
+    <div id="geocodeResults" class="geocode-results"></div>
+  </div>
+</div>
+
+<!-- ░░░ DETAIL PANEL ░░░ -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel">
+    <button class="detail-close" id="detailClose">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ░░░ MAIN ░░░ -->
+<main class="main" id="main">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="topbar-center">
+      <div class="location-title" id="locationTitle">Loading…</div>
+      <div class="topbar-sub" id="topbarSub"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="last-update" id="lastUpdate"></div>
+    </div>
+  </header>
+
+  <!-- Background art -->
+  <div class="bg-art" id="bgArt"></div>
+
+  <!-- ░ Hero condition ░ -->
+  <section class="hero" id="hero">
+    <div class="hero-icon" id="heroIcon">☀️</div>
+    <div class="hero-temps">
+      <span class="hero-high" id="heroHigh">—°</span>
+      <span class="hero-sep">/</span>
+      <span class="hero-low" id="heroLow">—°</span>
+    </div>
+    <div class="hero-condition" id="heroCondition">—</div>
+    <div class="hero-meta" id="heroMeta"></div>
+  </section>
+
+  <!-- ░ 10-day strip ░ -->
+  <section class="forecast-strip-wrap">
+    <div class="strip-label">10-DAY FORECAST</div>
+    <div class="forecast-strip" id="forecastStrip"></div>
+  </section>
+
+  <!-- ░ History calendar ░ -->
+  <section class="history-section">
+    <div class="section-header">
+      <div class="section-title">FORECAST HISTORY</div>
+      <div class="section-sub">Tap any date to see how the prediction changed</div>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </section>
+
+  <!-- ░ Drift overview chart ░ -->
+  <section class="drift-section" id="driftSection" style="display:none">
+    <div class="section-header">
+      <div class="section-title">TEMPERATURE DRIFT</div>
+      <div class="section-sub" id="driftSub"></div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="driftChart"></canvas>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
