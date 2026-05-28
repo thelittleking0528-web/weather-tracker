@@ -1,0 +1,66 @@
+Do these tasks in order. Log each step to /home/ryan/claude-code-log.txt as you go.
+
+STEP 1 - READ CREDENTIALS:
+Read /home/ryan/IMPORTANT-PASSWORDS.md and extract:
+- Supabase service role key
+- Coolify API token (if present)
+Save these to shell variables for use in later steps.
+
+STEP 2 - SUPABASE SCHEMA:
+Write this SQL to /tmp/weather-schema.sql then execute it via the Supabase API.
+
+SQL content:
+CREATE TABLE IF NOT EXISTS locations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  lat DECIMAL(9,6) NOT NULL,
+  lon DECIMAL(9,6) NOT NULL,
+  timezone TEXT NOT NULL DEFAULT 'America/New_York',
+  created_at TIMESTAMPTY NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS daily_forecasts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  location_id UUID NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
+  captured_at TIMESTAMPTY NOT NULL,
+  forecast_date DATE NOT NULL,
+  high_temp DECIMAL(5,2),
+  low_temp DECIMAL(5,2),
+  weather_code SMALLINT,
+  precip_probability SMALLINT,
+  wind_speed_max DECIMAL(6,2),
+  uv_index_max DECIMAL(4,2),
+  sunrise TEXT,
+  sunset TEXT,
+  peak_temp_hour SMALLINT,
+  hourly_temps JSONB,
+  hourly_codes JSONB,
+  hourly_precip JSONB,
+  hourly_wind JSONB,
+  hourly_apparent JSONB,
+  UNIQUE(location_id, captured_at, forecast_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_forecasts_location_date ON daily_forecasts(location_id, forecast_date);
+CREATE INDEX IF NOT EXISTS idx_forecasts_location_captured ON daily_forecasts(location_id, captured_at DESC);
+
+INSERT INTO locations (name, lat, lon, timezone)
+VALUES ('Ronkonkoma, NY', 40.8234, -73.1129, 'America/New_York')
+ON CONFLICT DO NOTHING;
+
+To run the SQL: use curl to POST to https://supabase.ry-server.com/rest/v1/rpc/ or connect via psql. Check how supabase is configured at /home/ryan/supabase/supabase/docker/.env find the postgres connection string, then run: psql <connection-string> -f /tmp/weather-schema.sql
+
+STEP 3 - COOLIFY SETUP:
+Use the Coolify API at http://localhost:8000/api/v1 with the Bearer token from the passwords file.
+- Create a new application from GitHub repo: thelittleking0528-web/weather-tracker
+- Set domain: weather.ry-server.com
+- Set environment variables: SUPABASE_URL=https://supabase.ry-server.com and SUPABASE_SERVICE_KEY=(value from passwords file)
+- Trigger a deploy
+If you can't find a Coolify API token in the passwords file, check http://localhost:8000 settings page for how to generate one, or if Coolify CLI is available.
+
+STEP 4 - CLOUDFLARE TUMNEL:
+Read /etc/cloudflared/config.yml to see the current tunnel config format.
+Add a new ingress rule for weather.ry-server.com pointing to the port Coolify assigned to the weather-tracker container.
+Then run: sudo systemctl restart cloudflared
+
+Report the final status of each step when done.
